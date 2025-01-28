@@ -1,0 +1,7 @@
+volumes/*
+!volumes/.gitkeep
+/backups/
+*.tar.gz
+.env
+secrets/*
+!secrets/.gitkeep

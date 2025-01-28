@@ -1,0 +1,33 @@
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - /home/yash/docker/volumes/influxdb-v2/data:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=yash
+      - DOCKER_INFLUXDB_INIT_PASSWORD_FILE=/run/secrets/influxdb_password
+      - DOCKER_INFLUXDB_INIT_ORG=homelab
+      - DOCKER_INFLUXDB_INIT_BUCKET=homelab
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE=/run/secrets/influxdb_admin_token
+    networks:
+      - influxdb-network
+    secrets:
+      - influxdb_password
+      - influxdb_admin_token
+
+volumes:
+  influxdb-data:
+
+networks:
+  influxdb-network:
+    driver: bridge
+
+secrets:
+  influxdb_password:
+    file: /home/yash/docker/secrets/influxdb_v2_password.txt
+  influxdb_admin_token:
+    file: /home/yash/docker/secrets/influxdb_v2_admin_token.txt
