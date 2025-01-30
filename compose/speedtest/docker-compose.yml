@@ -14,6 +14,6 @@ services:
             - APP_TIMEZONE=Asia/Kolkata
             - DISPLAY_TIMEZONE=Asia/Kolkata
             - SPEEDTEST_SCHEDULE=30 9-21 * * *
-            - SPEEDTEST_SERVERS=15797,10197,11558,13172,19889
+            - SPEEDTEST_SERVERS=15797,10197,11558,19889
         volumes:
             - /home/yash/docker/volumes/speedtest/data:/config
