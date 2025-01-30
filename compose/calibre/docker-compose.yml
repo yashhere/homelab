@@ -1,0 +1,18 @@
+services:
+  calibre-web-automated:
+    image: crocodilestick/calibre-web-automated:latest
+    container_name: calibre-web-automated
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=Asia/Kolkata
+      - DOCKER_MODS=lscr.io/linuxserver/mods:universal-calibre-v7.16.0
+    volumes:
+      - /home/yash/docker/volumes/calibre/config:/config
+      - ./ingest:/cwa-book-ingest
+      - /home/yash/docker/volumes/calibre/library:/calibre-library
+      #- /path/to/your/gmail/credentials.json:/app/calibre-web/gmail.json #Optional
+    ports:
+      - 48083:8083
+      - 48084:8084
+    restart: unless-stopped
