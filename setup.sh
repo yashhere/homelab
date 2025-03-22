@@ -10,8 +10,10 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-COMMAND=$1
-SERVICE=$2
+SERVICE=$1
+COMMAND=$2
+
+echo $COMMAND, $SERVICE
 COMPOSE_FILE="compose/$SERVICE/docker-compose.yml"
 
 # Handle nested monitoring services
@@ -58,7 +60,7 @@ case $COMMAND in
         docker compose -f "$COMPOSE_FILE" logs -f
     ;;
     backup)
-        if [ -z "$2" ]; then
+        if [ -z "$3" ]; then
             echo "Error: Backup destination not specified"
             echo "Usage: $0 backup <backup_dest> [service]"
             echo "  If service is not provided, backs up all services"
@@ -66,10 +68,10 @@ case $COMMAND in
         fi
         if [ -z "$SERVICE" ]; then
             echo "Backing up all services..."
-            ./scripts/backup.sh "$2"
+            ./scripts/backup.sh "$3"
         else
             echo "Backing up service: $SERVICE"
-            ./scripts/backup.sh "$2" "$SERVICE"
+            ./scripts/backup.sh "$3" "$SERVICE"
         fi
     ;;
     *)
