@@ -15,7 +15,8 @@ fi
 if [ -n "$2" ]; then
     SERVICES=("$2")
 else
-    SERVICES=($(ls -d compose/*/ | xargs -n 1 basename))
+    # Find all compose files and get their relative paths
+    SERVICES=($(find compose -mindepth 1 -type f -name 'docker-compose.yml' -exec dirname {} \; | sed 's|^compose/||'))
 fi
 
 # Create base backup directory
