@@ -1,28 +1,70 @@
-Docker Environment Structure
+# Docker Services Management
 
-./docker
-├── compose/    # Docker compose files
-├── volumes/    # Docker volumes
-└── configs/    # Configuration files
+## Available Services
+- calibre
+- couchdb
+- hoarder
+- miniflux
+- monitoring/grafana
+- monitoring/influxdb-v2
+- npm (Nginx Proxy Manager)
+- openwebui
+- speedtest
 
-Usage:
-1. Place your docker-compose.yml files in the compose directory
-2. Store persistent data in the volumes directory
-3. Keep configuration files in the configs directory
-
-Remember to:
-1. Log out and back in to use Docker without sudo
-2. Use docker compose from any directory
-3. Check docker logs with: docker logs [container_name]
-4. Monitor containers with: docker stats
-
-
-TODO:
-1. Backup scripts
-2.
-
-
-Create a new network for Nginx Proxy Manager -
-```
+## Setup
+1. Create the proxy network:
+```bash
 docker network create proxy
+```
+
+2. Make sure all scripts are executable:
+```bash
+chmod +x setup.sh scripts/*.sh
+```
+
+## Usage
+Start/stop services using the setup script:
+```bash
+# Start a service
+./setup.sh <service> start
+
+# Stop a service
+./setup.sh <service> stop
+
+# Restart a service
+./setup.sh <service> restart
+
+# Check service status
+./setup.sh <service> status
+
+# View service logs
+./setup.sh <service> logs
+```
+
+Examples:
+```bash
+# Start Grafana
+./setup.sh monitoring/grafana start
+
+# Stop Calibre
+./setup.sh calibre stop
+
+# View all available services
+./setup.sh
+```
+
+## Backup
+To backup all volumes:
+```bash
+./scripts/backup.sh /path/to/backup/destination
+```
+
+## Directory Structure
+```
+.
+├── compose/        # Docker compose files
+├── volumes/        # Docker volumes
+├── configs/        # Configuration files
+├── scripts/        # Management scripts
+└── secrets/        # Secret files
 ```
