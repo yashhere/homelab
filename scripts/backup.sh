@@ -23,17 +23,23 @@ BACKUP_DIR="$BACKUP_DEST/$SERVICE/$DATE"
 mkdir -p "$BACKUP_DIR"
 
 echo $BACKUP_DIR
-# Extract volumes from compose file
+# Extract and validate volumes from compose file
 VOLUMES=$(yq '.services[].volumes[]' "$COMPOSE_FILE" | grep -v '^null$' | awk -F: '{print $1}' | sort | uniq)
-
-echo $VOLUMES
 
 # Backup each volume
 for volume in $VOLUMES; do
-    echo "$volume"
+    # Skip anonymous volumes (those without a host path)
+    if [[ "$volume" =~ ^[^/] ]]; then
+        echo "Skipping anonymous volume: $volume"
+        continue
+    fi
+    
+    # Validate and backup
     if [ -d "$volume" ]; then
         echo "Backing up $(basename $volume)..."
-        tar czf "$BACKUP_DIR/$(basename $volume).tar.gz" "$volume"
+        tar czf "$BACKUP_DIR/$(basename $volume).tar.gz" -C "$(dirname $volume)" "$(basename $volume)"
+    else
+        echo "Warning: Volume path $volume does not exist or is not a directory"
     fi
 done
 
