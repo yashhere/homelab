@@ -12,17 +12,26 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-# Correct argument parsing
-SERVICE=$1
-COMMAND=$2
-BACKUP_DEST=$3
+if [ "$1" == "backup" ]; then
+    # Special case: backup command without service
+    COMMAND="backup"
+    BACKUP_DEST=$2
+    SERVICE=""
+else
+    # Normal case with service
+    SERVICE=$1
+    COMMAND=$2
+    BACKUP_DEST=$3
+fi
 
 # For backup command, validate backup destination
-if [ "$COMMAND" == "backup" ] && [ -z "$BACKUP_DEST" ]; then
-    echo "Error: Backup destination not specified"
-    echo "Usage: $0 <service> backup <backup_dest>"
-    echo "  To backup all services: $0 backup <backup_dest>"
-    exit 1
+if [ "$COMMAND" == "backup" ]; then
+    if [ -z "$BACKUP_DEST" ]; then
+        echo "Error: Backup destination not specified"
+        echo "Usage: $0 [service] backup <backup_dest>"
+        echo "  To backup all services: $0 backup <backup_dest>"
+        exit 1
+    fi
 fi
 
 if [ "$COMMAND" == "backup" ]; then
