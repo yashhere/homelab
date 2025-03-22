@@ -1,26 +1,27 @@
-# Makefile
-.PHONY: start stop restart backup clean help
-
-# include .env
+.PHONY: help start stop restart status logs
 
 help:
 	@echo "Available commands:"
-	@echo "start    - Start all services"
-	@echo "stop     - Stop all services"
-	@echo "restart  - Restart all services"
-	@echo "backup   - Create backup of configs and volumes"
-	@echo "clean    - Remove old backups"
+	@echo "  make start SERVICE=<service>"
+	@echo "  make stop SERVICE=<service>"
+	@echo "  make restart SERVICE=<service>"
+	@echo "  make status SERVICE=<service>"
+	@echo "  make logs SERVICE=<service>"
+	@echo ""
+	@echo "Available services:"
+	@find compose -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
 
 start:
-	@./scripts/start.sh
+	@bash setup.sh $(SERVICE) start
 
 stop:
-	@./scripts/stop.sh
+	@bash setup.sh $(SERVICE) stop
 
-restart: stop start
+restart:
+	@bash setup.sh $(SERVICE) restart
 
-backup:
-	@./scripts/backup.sh
+status:
+	@bash setup.sh $(SERVICE) status
 
-clean:
-	@./scripts/clean-backups.sh
+logs:
+	@bash setup.sh $(SERVICE) logs
