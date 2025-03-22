@@ -11,9 +11,17 @@ if [ $# -lt 1 ]; then
 fi
 
 # Correct argument parsing
-SERVICE=$1
-COMMAND=$2
-BACKUP_DEST=$3
+if [ "$1" == "backup" ]; then
+    # Special case: backup command without service
+    COMMAND="backup"
+    BACKUP_DEST=$2
+    SERVICE=""
+else
+    # Normal case with service
+    SERVICE=$1
+    COMMAND=$2
+    BACKUP_DEST=$3
+fi
 
 # For backup command, service is optional
 if [ "$COMMAND" == "backup" ]; then

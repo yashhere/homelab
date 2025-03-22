@@ -48,4 +48,12 @@ logs:
 	@bash setup.sh logs $(SERVICE)
 
 backup:
-	@bash setup.sh $(SERVICE) backup $(BACKUP_DEST)
+	@if [ -z "$(BACKUP_DEST)" ]; then \
+		echo "Error: BACKUP_DEST must be specified"; \
+		exit 1; \
+	fi
+	@if [ -z "$(SERVICE)" ]; then \
+		bash setup.sh backup $(BACKUP_DEST); \
+	else \
+		bash setup.sh $(SERVICE) backup $(BACKUP_DEST); \
+	fi
