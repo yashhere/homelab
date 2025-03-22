@@ -3,17 +3,37 @@ set -e
 
 # Check if correct number of arguments provided
 if [ $# -lt 1 ]; then
-    echo "Usage: $0 <command> [service]"
+    echo "Usage: $0 [service] <command> [backup_dest]"
     echo "Available commands: start, stop, restart, status, logs, backup"
     echo "Available services:"
     find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
 fi
 
+# Correct argument parsing
 SERVICE=$1
 COMMAND=$2
+BACKUP_DEST=$3
 
-echo $COMMAND, $SERVICE
+# For backup command, service is optional
+if [ "$COMMAND" == "backup" ]; then
+    if [ -z "$BACKUP_DEST" ]; then
+        echo "Error: Backup destination not specified"
+        echo "Usage: $0 [service] backup <backup_dest>"
+        echo "  If service is not provided, backs up all services"
+        exit 1
+    fi
+    if [ -z "$SERVICE" ]; then
+        echo "Backing up all services..."
+        ./scripts/backup.sh "$BACKUP_DEST"
+    else
+        echo "Backing up service: $SERVICE"
+        ./scripts/backup.sh "$BACKUP_DEST" "$SERVICE"
+    fi
+    exit 0
+fi
+
+echo "Running command '$COMMAND' for service '$SERVICE'"
 COMPOSE_FILE="compose/$SERVICE/docker-compose.yml"
 
 # Handle nested monitoring services
@@ -21,8 +41,8 @@ if [[ $SERVICE == monitoring/* ]]; then
     COMPOSE_FILE="compose/$SERVICE/docker-compose.yml"
 fi
 
-# For backup command, service is optional
-if [ "$COMMAND" != "backup" ] && [ -z "$SERVICE" ]; then
+# For non-backup commands, service is required
+if [ -z "$SERVICE" ]; then
     echo "Error: Service must be specified for command '$COMMAND'"
     echo "Available services:"
     find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
@@ -59,20 +79,6 @@ case $COMMAND in
         echo "Showing logs for $SERVICE:"
         docker compose -f "$COMPOSE_FILE" logs -f
     ;;
-    backup)
-        if [ -z "$3" ]; then
-            echo "Error: Backup destination not specified"
-            echo "Usage: $0 backup <backup_dest> [service]"
-            echo "  If service is not provided, backs up all services"
-            exit 1
-        fi
-        if [ -z "$SERVICE" ]; then
-            echo "Backing up all services..."
-            ./scripts/backup.sh "$3"
-        else
-            echo "Backing up service: $SERVICE"
-            ./scripts/backup.sh "$3" "$SERVICE"
-        fi
     ;;
     *)
         echo "Error: Unknown command '$COMMAND'"
