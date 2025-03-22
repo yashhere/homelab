@@ -58,13 +58,19 @@ case $COMMAND in
         docker compose -f "$COMPOSE_FILE" logs -f
     ;;
     backup)
-        if [ -z "$3" ]; then
+        if [ -z "$2" ]; then
             echo "Error: Backup destination not specified"
-            echo "Usage: $0 <service> backup <backup_dest>"
+            echo "Usage: $0 backup <backup_dest> [service]"
+            echo "  If service is not provided, backs up all services"
             exit 1
         fi
-        echo "Backing up $SERVICE..."
-        ./scripts/backup.sh "$SERVICE" "$3"
+        if [ -z "$SERVICE" ]; then
+            echo "Backing up all services..."
+            ./scripts/backup.sh "$2"
+        else
+            echo "Backing up service: $SERVICE"
+            ./scripts/backup.sh "$2" "$SERVICE"
+        fi
     ;;
     *)
         echo "Error: Unknown command '$COMMAND'"
