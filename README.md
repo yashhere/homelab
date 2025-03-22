@@ -15,3 +15,14 @@ Remember to:
 2. Use docker compose from any directory
 3. Check docker logs with: docker logs [container_name]
 4. Monitor containers with: docker stats
+
+
+TODO:
+1. Backup scripts
+2.
+
+
+Create a new network for Nginx Proxy Manager -
+```
+docker network create proxy
+```
