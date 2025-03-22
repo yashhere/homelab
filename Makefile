@@ -7,7 +7,7 @@ help:
 	@echo "  make restart SERVICE=<service>"
 	@echo "  make status SERVICE=<service>"
 	@echo "  make logs SERVICE=<service>"
-	@echo "  make backup SERVICE=<service> BACKUP_DEST=/path/to/backup"
+	@echo "  make backup SERVICE=<service|all> BACKUP_DEST=/path/to/backup"
 	@echo "  make update SERVICE=<service>"
 	@echo ""
 	@echo "Available services:"
@@ -54,10 +54,10 @@ backup:
 		exit 1; \
 	fi
 	@if [ -z "$(SERVICE)" ]; then \
-		bash setup.sh backup $(BACKUP_DEST); \
-	else \
-		bash setup.sh backup $(BACKUP_DEST) $(SERVICE); \
+		echo "Error: SERVICE must be specified (use 'all' for all services)"; \
+		exit 1; \
 	fi
+	@bash setup.sh backup $(SERVICE) $(BACKUP_DEST)
 
 update:
 	@if [ -z "$(SERVICE)" ]; then \

@@ -3,9 +3,9 @@ set -e
 
 # Check if correct number of arguments provided
 if [ $# -lt 1 ]; then
-    echo "Usage: $0 <service> <command> [backup_dest]"
-    echo "  For backup: $0 [service] backup <backup_dest>"
-    echo "  To backup all services: $0 backup <backup_dest>"
+    echo "Usage:"
+    echo "  General: $0 <command> <service>"
+    echo "  Backup:  $0 backup <service|all> <backup_dest>"
     echo "Available commands: start, stop, restart, status, logs, backup, update"
     echo "Available services:"
     find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
@@ -13,19 +13,18 @@ if [ $# -lt 1 ]; then
 fi
 
 COMMAND=$1
-SERVICE=$2  # optional for backup command
+SERVICE=$2
 BACKUP_DEST=$3
 
 # For backup command, validate backup destination
 if [ "$COMMAND" == "backup" ]; then
     if [ -z "$BACKUP_DEST" ]; then
         echo "Error: Backup destination not specified"
-        echo "Usage: $0 [service] backup <backup_dest>"
-        echo "  To backup all services: $0 backup <backup_dest>"
+        echo "Usage: $0 backup <service|all> <backup_dest>"
         exit 1
     fi
     
-    if [ -z "$SERVICE" ]; then
+    if [ "$SERVICE" == "all" ]; then
         echo "Backing up all services..."
         ./scripts/backup.sh "$BACKUP_DEST"
     else
