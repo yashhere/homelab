@@ -8,7 +8,7 @@ if [ $# -lt 1 ]; then
     echo "  Backup:  $0 backup <service|all> <backup_dest>"
     echo "Available commands: start, stop, restart, status, logs, backup, update"
     echo "Available services:"
-    find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
+    find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
 fi
 
@@ -46,7 +46,7 @@ fi
 if [ -z "$SERVICE" ]; then
     echo "Error: Service must be specified for command '$COMMAND'"
     echo "Available services:"
-    find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
+    find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
 fi
 
@@ -54,7 +54,7 @@ fi
 if [ -n "$SERVICE" ] && [ ! -f "$COMPOSE_FILE" ]; then
     echo "Error: Service '$SERVICE' not found"
     echo "Available services:"
-    find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
+    find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
 fi
 

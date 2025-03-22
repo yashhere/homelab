@@ -11,7 +11,7 @@ help:
 	@echo "  make update SERVICE=<service>"
 	@echo ""
 	@echo "Available services:"
-	@find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
+	@find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
 
 start:
 	@if [ -z "$(SERVICE)" ]; then \
