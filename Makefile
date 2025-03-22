@@ -56,7 +56,7 @@ backup:
 	@if [ -z "$(SERVICE)" ]; then \
 		bash setup.sh backup $(BACKUP_DEST); \
 	else \
-		bash setup.sh $(SERVICE) backup $(BACKUP_DEST); \
+		bash setup.sh backup $(BACKUP_DEST) $(SERVICE); \
 	fi
 
 update:

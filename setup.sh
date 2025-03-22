@@ -12,17 +12,9 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-if [ "$1" == "backup" ]; then
-    # Special case: backup command without service
-    COMMAND="backup"
-    BACKUP_DEST=$2
-    SERVICE=""
-else
-    # Normal case with service
-    SERVICE=$1
-    COMMAND=$2
-    BACKUP_DEST=$3
-fi
+COMMAND=$1
+SERVICE=$2  # optional for backup command
+BACKUP_DEST=$3
 
 # For backup command, validate backup destination
 if [ "$COMMAND" == "backup" ]; then
@@ -32,9 +24,7 @@ if [ "$COMMAND" == "backup" ]; then
         echo "  To backup all services: $0 backup <backup_dest>"
         exit 1
     fi
-fi
-
-if [ "$COMMAND" == "backup" ]; then
+    
     if [ -z "$SERVICE" ]; then
         echo "Backing up all services..."
         ./scripts/backup.sh "$BACKUP_DEST"
@@ -91,15 +81,15 @@ case $COMMAND in
         echo "Showing logs for $SERVICE:"
         docker compose -f "$COMPOSE_FILE" logs -f
     ;;
-    ;;
-    update)
-        echo "Updating $SERVICE..."
-        docker compose -f "$COMPOSE_FILE" pull
-        docker compose -f "$COMPOSE_FILE" up -d --force-recreate
-    ;;
-    *)
-        echo "Error: Unknown command '$COMMAND'"
-        echo "Available commands: start, stop, restart, status, logs, backup, update"
-        exit 1
-    ;;
+;;
+update)
+    echo "Updating $SERVICE..."
+    docker compose -f "$COMPOSE_FILE" pull
+    docker compose -f "$COMPOSE_FILE" up -d --force-recreate
+;;
+*)
+    echo "Error: Unknown command '$COMMAND'"
+    echo "Available commands: start, stop, restart, status, logs, backup, update"
+    exit 1
+;;
 esac
