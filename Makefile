@@ -9,7 +9,7 @@ help:
 	@echo "  make logs SERVICE=<service>"
 	@echo ""
 	@echo "Available services:"
-	@find compose -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
+	@find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
 
 start:
 	@bash setup.sh $(SERVICE) start

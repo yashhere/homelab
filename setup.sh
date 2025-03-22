@@ -5,7 +5,7 @@ set -e
 if [ $# -lt 2 ]; then
     echo "Usage: $0 <service> <command>"
     echo "Available services:"
-    find compose -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
+    find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
 fi
 
@@ -13,11 +13,16 @@ SERVICE=$1
 COMMAND=$2
 COMPOSE_FILE="compose/$SERVICE/docker-compose.yml"
 
+# Handle nested monitoring services
+if [[ $SERVICE == monitoring/* ]]; then
+    COMPOSE_FILE="compose/$SERVICE/docker-compose.yml"
+fi
+
 # Validate service exists
 if [ ! -f "$COMPOSE_FILE" ]; then
     echo "Error: Service '$SERVICE' not found"
     echo "Available services:"
-    find compose -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
+    find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
 fi
 
