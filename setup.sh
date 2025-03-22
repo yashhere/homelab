@@ -4,7 +4,7 @@ set -e
 # Check if correct number of arguments provided
 if [ $# -lt 1 ]; then
     echo "Usage: $0 [service] <command> [backup_dest]"
-    echo "Available commands: start, stop, restart, status, logs, backup"
+    echo "Available commands: start, stop, restart, status, logs, backup, update"
     echo "Available services:"
     find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
@@ -88,9 +88,14 @@ case $COMMAND in
         docker compose -f "$COMPOSE_FILE" logs -f
     ;;
     ;;
+    update)
+        echo "Updating $SERVICE..."
+        docker compose -f "$COMPOSE_FILE" pull
+        docker compose -f "$COMPOSE_FILE" up -d --force-recreate
+    ;;
     *)
         echo "Error: Unknown command '$COMMAND'"
-        echo "Available commands: start, stop, restart, status, logs, backup"
+        echo "Available commands: start, stop, restart, status, logs, backup, update"
         exit 1
     ;;
 esac
