@@ -80,15 +80,14 @@ case $COMMAND in
         echo "Showing logs for $SERVICE:"
         docker compose -f "$COMPOSE_FILE" logs -f
     ;;
-;;
-update)
-    echo "Updating $SERVICE..."
-    docker compose -f "$COMPOSE_FILE" pull
-    docker compose -f "$COMPOSE_FILE" up -d --force-recreate
-;;
-*)
-    echo "Error: Unknown command '$COMMAND'"
-    echo "Available commands: start, stop, restart, status, logs, backup, update"
-    exit 1
-;;
+    update)
+        echo "Updating $SERVICE..."
+        docker compose -f "$COMPOSE_FILE" pull
+        docker compose -f "$COMPOSE_FILE" up -d --force-recreate
+    ;;
+    *)
+        echo "Error: Unknown command '$COMMAND'"
+        echo "Available commands: start, stop, restart, status, logs, backup, update"
+        exit 1
+    ;;
 esac
