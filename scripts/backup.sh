@@ -28,16 +28,16 @@ for SERVICE in "${SERVICES[@]}"; do
         echo "Warning: Service '$SERVICE' not found"
         continue
     fi
-
+    
     # Create service backup directory
     SERVICE_BACKUP_DIR="$BACKUP_DIR/$SERVICE"
     mkdir -p "$SERVICE_BACKUP_DIR"
-
+    
     echo "Backing up service: $SERVICE"
     
     # Extract and validate volumes from compose file
     VOLUMES=$(yq '.services[].volumes[]' "$COMPOSE_FILE" | grep -v '^null$' | awk -F: '{print $1}' | sort | uniq)
-
+    
     # Backup each volume
     for volume in $VOLUMES; do
         # Skip anonymous volumes (those without a host path)
@@ -54,7 +54,7 @@ for SERVICE in "${SERVICES[@]}"; do
             echo "Warning: Volume path $volume does not exist or is not a directory"
         fi
     done
-
+    
     # Backup compose file
     cp "$COMPOSE_FILE" "$SERVICE_BACKUP_DIR/docker-compose.yml"
 done
