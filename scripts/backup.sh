@@ -22,11 +22,15 @@ fi
 BACKUP_DIR="$BACKUP_DEST/$SERVICE/$DATE"
 mkdir -p "$BACKUP_DIR"
 
+echo $BACKUP_DIR
 # Extract volumes from compose file
 VOLUMES=$(yq '.services[].volumes[]' "$COMPOSE_FILE" | grep -v '^null$' | awk -F: '{print $1}' | sort | uniq)
 
+echo $VOLUMES
+
 # Backup each volume
 for volume in $VOLUMES; do
+    echo "$volume"
     if [ -d "$volume" ]; then
         echo "Backing up $(basename $volume)..."
         tar czf "$BACKUP_DIR/$(basename $volume).tar.gz" "$volume"
