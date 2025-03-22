@@ -4,11 +4,14 @@ services:
     container_name: grafana
     user: '0'
     restart: unless-stopped
-    ports:
-      - "3456:3000"
+    # ports:
+    #   - '3456:3000'
+    networks:
+      - default
+      - proxy
     volumes:
-      - /home/yash/docker/volumes/grafana/data:/var/lib/grafana
-      - /home/docker/configs/grafana/provisioning:/etc/grafana/provisioning
+      - /Users/yash/docker/volumes/grafana/data:/var/lib/grafana
+      - /Users/yash/docker/configs/grafana/provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/grafana_password
@@ -17,30 +20,8 @@ services:
       # InfluxDB Data Source (configure this if you are using InfluxDB)
       - GF_DATABASE_TYPE=sqlite3 # Configure this for local grafana db
       - GF_DATABASE_NAME=/var/lib/grafana/grafana.db
-      - GF_DATABASE_HOST=
-      - GF_DATABASE_USER=
-      - GF_DATABASE_PASSWORD=
-      - GF_DATABASE_SSL_MODE=
-      - GF_DATABASE_PATH=
-      - GF_DATABASE_URL=
-      - GF_DATABASE_MAX_IDLE_CONN=
-      - GF_DATABASE_MAX_OPEN_CONN=
-      - GF_DATABASE_CONN_MAX_LIFETIME=
-      - GF_DATABASE_LOG_QUERIES=
-      - GF_DATABASE_CACHE_MODE=
-      - GF_DATABASE_WAL=
-      - GF_DATABASE_URL=
-      - GF_DATABASE_MAX_IDLE_CONN=
-      - GF_DATABASE_MAX_OPEN_CONN=
-      - GF_DATABASE_CONN_MAX_LIFETIME=
-      - GF_DATABASE_LOG_QUERIES=
-      - GF_DATABASE_CACHE_MODE=
-      - GF_DATABASE_WAL=
       - INFLUXDB_PASSWORD_FILE=/run/secrets/influxdb_password
       - INFLUXDB_ADMIN_TOKEN_FILE=/run/secrets/influxdb_admin_token
-    networks:
-      - grafana-network
-      - influxdb-v2_influxdb-network
     secrets:
       - grafana_password
       - influxdb_password
@@ -50,15 +31,14 @@ volumes:
   grafana-data:
 
 networks:
-  grafana-network:
-    driver: bridge
-  influxdb-v2_influxdb-network:
+  default:
+  proxy:
     external: true
 
 secrets:
   grafana_password:
-    file: /home/yash/docker/secrets/grafana_password.txt
+    file: /Users/yash/docker/secrets/grafana_password.txt
   influxdb_password:
-    file: /home/yash/docker/secrets/influxdb_v2_password.txt
+    file: /Users/yash/docker/secrets/influxdb_v2_password.txt
   influxdb_admin_token:
-    file: /home/yash/docker/secrets/influxdb_v2_admin_token.txt
+    file: /Users/yash/docker/secrets/influxdb_v2_admin_token.txt

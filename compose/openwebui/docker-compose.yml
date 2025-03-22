@@ -1,0 +1,16 @@
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    volumes:
+      - open-webui:/app/backend/data
+    networks:
+      - default
+      - proxy
+
+volumes:
+  open-webui:
+
+networks:
+  default:
+  proxy:
+    external: true

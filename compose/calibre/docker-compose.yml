@@ -7,13 +7,12 @@ services:
       - PGID=100
       - TZ=Asia/Kolkata
     volumes:
-      - /home/yash/docker/volumes/calibre/config:/config
+      - /Users/yash/docker/volumes/calibre/config:/config
       - ./ingest:/cwa-book-ingest
-      - /home/yash/docker/volumes/calibre/library:/calibre-library
-      #- /path/to/your/gmail/credentials.json:/app/calibre-web/gmail.json #Optional
-    ports:
-      - 48083:8083
+      - /Users/yash/docker/volumes/calibre/library:/calibre-library
     restart: unless-stopped
+    networks:
+      - proxy
 
   calibre-web-automated-book-downloader:
     image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
@@ -23,14 +22,20 @@ services:
       CLOUDFLARE_PROXY_URL: http://cloudflarebypassforscraping:8000
       INGEST_DIR: /cwa-book-ingest
       BOOK_LANGUAGE: en
-    ports:
-      - 48085:8084
     restart: unless-stopped
+    platform: linux/amd64
     volumes:
       # This is where the books will be downloaded to, usually it would be
       # the same as whatever you gave in "calibre-web-automated"
       - ./ingest:${INGEST_DIR:-/cwa-book-ingest}
+    networks:
+      - proxy
 
   cloudflarebypassforscraping:
     image: ghcr.io/sarperavci/cloudflarebypassforscraping:latest
     restart: unless-stopped
+    platform: linux/amd64
+
+networks:
+  proxy:
+    external: true

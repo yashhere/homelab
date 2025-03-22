@@ -1,19 +1,27 @@
 services:
-    speedtest-tracker:
-        image: lscr.io/linuxserver/speedtest-tracker:latest
-        restart: always
-        container_name: speedtest-tracker
-        ports:
-            - 54322:80
-            - 58443:443
-        environment:
-            - PUID=1000
-            - PGID=1000
-            - APP_KEY=base64:4GO/GpAttA8UDfDJc/UZNRe1+7zhXNruBz0ONuZow3E=
-            - DB_CONNECTION=sqlite
-            - APP_TIMEZONE=Asia/Kolkata
-            - DISPLAY_TIMEZONE=Asia/Kolkata
-            - SPEEDTEST_SCHEDULE=30 9-21 * * *
-            - SPEEDTEST_SERVERS=15797,10197,11558,19889
-        volumes:
-            - /home/yash/docker/volumes/speedtest/data:/config
+  speedtest-tracker:
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    restart: always
+    container_name: speedtest-tracker
+    # ports:
+    #   - 54322:80
+    #   - 58443:443
+    networks:
+      - default
+      - proxy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - APP_KEY=base64:4GO/GpAttA8UDfDJc/UZNRe1+7zhXNruBz0ONuZow3E=
+      - DB_CONNECTION=sqlite
+      - APP_TIMEZONE=Asia/Kolkata
+      - DISPLAY_TIMEZONE=Asia/Kolkata
+      - SPEEDTEST_SCHEDULE=30 9-21 * * *
+      - SPEEDTEST_SERVERS=15797,10197,11558,19889
+    volumes:
+      - /Users/yash/docker/volumes/speedtest/data:/config
+
+networks:
+  default:
+  proxy:
+    external: true

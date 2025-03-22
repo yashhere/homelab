@@ -1,8 +1,6 @@
 services:
   miniflux:
     image: miniflux/miniflux:latest
-    ports:
-      - "45080:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -12,6 +10,10 @@ services:
       - CREATE_ADMIN=1
       - ADMIN_USERNAME=admin
       - ADMIN_PASSWORD=admin123
+    networks:
+      - default
+      - proxy
+
   db:
     image: postgres:17-alpine
     environment:
@@ -21,8 +23,16 @@ services:
     volumes:
       - miniflux-db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "miniflux"]
+      test: ['CMD', 'pg_isready', '-U', 'miniflux']
       interval: 10s
       start_period: 30s
+    networks:
+      - default
+
 volumes:
   miniflux-db:
+
+networks:
+  default:
+  proxy:
+    external: true
