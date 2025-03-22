@@ -1,4 +1,4 @@
-.PHONY: help start stop restart status logs
+.PHONY: help start stop restart status logs backup
 
 help:
 	@echo "Available commands:"
@@ -7,6 +7,7 @@ help:
 	@echo "  make restart SERVICE=<service>"
 	@echo "  make status SERVICE=<service>"
 	@echo "  make logs SERVICE=<service>"
+	@echo "  make backup SERVICE=<service> BACKUP_DEST=/path/to/backup"
 	@echo ""
 	@echo "Available services:"
 	@find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
@@ -25,3 +26,6 @@ status:
 
 logs:
 	@bash setup.sh $(SERVICE) logs
+
+backup:
+	@bash setup.sh $(SERVICE) backup $(BACKUP_DEST)

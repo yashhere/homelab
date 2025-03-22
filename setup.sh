@@ -48,9 +48,18 @@ case $COMMAND in
         echo "Showing logs for $SERVICE:"
         docker compose -f "$COMPOSE_FILE" logs -f
     ;;
+    backup)
+        if [ -z "$3" ]; then
+            echo "Error: Backup destination not specified"
+            echo "Usage: $0 <service> backup <backup_dest>"
+            exit 1
+        fi
+        echo "Backing up $SERVICE..."
+        ./scripts/backup.sh "$SERVICE" "$3"
+    ;;
     *)
         echo "Error: Unknown command '$COMMAND'"
-        echo "Available commands: start, stop, restart, status, logs"
+        echo "Available commands: start, stop, restart, status, logs, backup"
         exit 1
     ;;
 esac

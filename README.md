@@ -23,7 +23,29 @@ chmod +x setup.sh scripts/*.sh
 ```
 
 ## Usage
-Start/stop services using the setup script:
+
+### Using Makefile (recommended)
+```bash
+# Start a service
+make start SERVICE=<service>
+
+# Stop a service 
+make stop SERVICE=<service>
+
+# Restart a service
+make restart SERVICE=<service>
+
+# Check service status
+make status SERVICE=<service>
+
+# View service logs
+make logs SERVICE=<service>
+
+# Backup a service
+make backup SERVICE=<service> BACKUP_DEST=/path/to/backup
+```
+
+### Using setup.sh directly
 ```bash
 # Start a service
 ./setup.sh <service> start
@@ -39,6 +61,9 @@ Start/stop services using the setup script:
 
 # View service logs
 ./setup.sh <service> logs
+
+# Backup a service
+./setup.sh <service> backup /path/to/backup
 ```
 
 Examples:
