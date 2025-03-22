@@ -2,15 +2,16 @@
 set -e
 
 # Check if correct number of arguments provided
-if [ $# -lt 2 ]; then
-    echo "Usage: $0 <service> <command>"
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <command> [service]"
+    echo "Available commands: start, stop, restart, status, logs, backup"
     echo "Available services:"
     find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
     exit 1
 fi
 
-SERVICE=$1
-COMMAND=$2
+COMMAND=$1
+SERVICE=$2
 COMPOSE_FILE="compose/$SERVICE/docker-compose.yml"
 
 # Handle nested monitoring services
@@ -18,8 +19,16 @@ if [[ $SERVICE == monitoring/* ]]; then
     COMPOSE_FILE="compose/$SERVICE/docker-compose.yml"
 fi
 
-# Validate service exists
-if [ ! -f "$COMPOSE_FILE" ]; then
+# For backup command, service is optional
+if [ "$COMMAND" != "backup" ] && [ -z "$SERVICE" ]; then
+    echo "Error: Service must be specified for command '$COMMAND'"
+    echo "Available services:"
+    find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
+    exit 1
+fi
+
+# Validate service exists if specified
+if [ -n "$SERVICE" ] && [ ! -f "$COMPOSE_FILE" ]; then
     echo "Error: Service '$SERVICE' not found"
     echo "Available services:"
     find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort

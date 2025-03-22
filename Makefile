@@ -13,19 +13,39 @@ help:
 	@find compose -mindepth 1 -type d -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | sort
 
 start:
-	@bash setup.sh $(SERVICE) start
+	@if [ -z "$(SERVICE)" ]; then \
+		echo "Error: SERVICE must be specified"; \
+		exit 1; \
+	fi
+	@bash setup.sh start $(SERVICE)
 
 stop:
-	@bash setup.sh $(SERVICE) stop
+	@if [ -z "$(SERVICE)" ]; then \
+		echo "Error: SERVICE must be specified"; \
+		exit 1; \
+	fi
+	@bash setup.sh stop $(SERVICE)
 
 restart:
-	@bash setup.sh $(SERVICE) restart
+	@if [ -z "$(SERVICE)" ]; then \
+		echo "Error: SERVICE must be specified"; \
+		exit 1; \
+	fi
+	@bash setup.sh restart $(SERVICE)
 
 status:
-	@bash setup.sh $(SERVICE) status
+	@if [ -z "$(SERVICE)" ]; then \
+		echo "Error: SERVICE must be specified"; \
+		exit 1; \
+	fi
+	@bash setup.sh status $(SERVICE)
 
 logs:
-	@bash setup.sh $(SERVICE) logs
+	@if [ -z "$(SERVICE)" ]; then \
+		echo "Error: SERVICE must be specified"; \
+		exit 1; \
+	fi
+	@bash setup.sh logs $(SERVICE)
 
 backup:
 	@bash setup.sh $(SERVICE) backup $(BACKUP_DEST)
