@@ -15,17 +15,19 @@ help:
 
 start:
 	@if [ -z "$(SERVICE)" ]; then \
-		echo "Error: SERVICE must be specified"; \
-		exit 1; \
+		echo "Starting all services..."; \
+		find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | xargs -I {} bash setup.sh start {}; \
+	else \
+		bash setup.sh start $(SERVICE); \
 	fi
-	@bash setup.sh start $(SERVICE)
 
 stop:
 	@if [ -z "$(SERVICE)" ]; then \
-		echo "Error: SERVICE must be specified"; \
-		exit 1; \
+		echo "Stopping all services..."; \
+		find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | xargs -I {} bash setup.sh stop {}; \
+	else \
+		bash setup.sh stop $(SERVICE); \
 	fi
-	@bash setup.sh stop $(SERVICE)
 
 restart:
 	@if [ -z "$(SERVICE)" ]; then \
