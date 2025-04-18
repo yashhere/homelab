@@ -18,7 +18,10 @@ start:
 		echo "Starting all services..."; \
 		find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | xargs -I {} bash setup.sh start {}; \
 	else \
-		bash setup.sh start $(SERVICE); \
+		echo "Starting services: $(SERVICE)"; \
+		for svc in $(SERVICE); do \
+			bash setup.sh start $$svc; \
+		done \
 	fi
 
 stop:
@@ -26,7 +29,10 @@ stop:
 		echo "Stopping all services..."; \
 		find compose -mindepth 1 -type f -name "docker-compose.yml" -exec dirname {} \; | sed 's|^compose/||' | xargs -I {} bash setup.sh stop {}; \
 	else \
-		bash setup.sh stop $(SERVICE); \
+		echo "Stopping services: $(SERVICE)"; \
+		for svc in $(SERVICE); do \
+			bash setup.sh stop $$svc; \
+		done \
 	fi
 
 restart:
@@ -34,21 +40,32 @@ restart:
 		echo "Error: SERVICE must be specified"; \
 		exit 1; \
 	fi
-	@bash setup.sh restart $(SERVICE)
+	@echo "Restarting services: $(SERVICE)"; \
+		for svc in $(SERVICE); do \
+			bash setup.sh restart $$svc; \
+		done
 
 status:
 	@if [ -z "$(SERVICE)" ]; then \
 		echo "Error: SERVICE must be specified"; \
 		exit 1; \
 	fi
-	@bash setup.sh status $(SERVICE)
+	@echo "Getting status for services: $(SERVICE)"; \
+		for svc in $(SERVICE); do \
+			echo "--- Status for $$svc ---"; \
+			bash setup.sh status $$svc; \
+		done
 
 logs:
 	@if [ -z "$(SERVICE)" ]; then \
 		echo "Error: SERVICE must be specified"; \
 		exit 1; \
 	fi
-	@bash setup.sh logs $(SERVICE)
+	@echo "Getting logs for services: $(SERVICE)"; \
+		for svc in $(SERVICE); do \
+			echo "--- Logs for $$svc ---"; \
+			bash setup.sh logs $$svc; \
+		done
 
 backup:
 	@if [ -z "$(BACKUP_DEST)" ]; then \
@@ -59,11 +76,22 @@ backup:
 		echo "Error: SERVICE must be specified (use 'all' for all services)"; \
 		exit 1; \
 	fi
-	@bash setup.sh backup $(SERVICE) $(BACKUP_DEST)
+	@if [ "$(SERVICE)" = "all" ]; then \
+			echo "Backing up all services to $(BACKUP_DEST)..."; \
+			bash setup.sh backup all $(BACKUP_DEST); \
+		else \
+			echo "Backing up services: $(SERVICE) to $(BACKUP_DEST)..."; \
+			for svc in $(SERVICE); do \
+				bash setup.sh backup $$svc $(BACKUP_DEST); \
+			done; \
+		fi
 
 update:
 	@if [ -z "$(SERVICE)" ]; then \
 		echo "Error: SERVICE must be specified"; \
 		exit 1; \
 	fi
-	@bash setup.sh update $(SERVICE)
+	@echo "Updating services: $(SERVICE)"; \
+		for svc in $(SERVICE); do \
+			bash setup.sh update $$svc; \
+		done
