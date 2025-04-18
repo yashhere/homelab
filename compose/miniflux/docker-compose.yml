@@ -4,6 +4,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: always
     environment:
       - DATABASE_URL=postgres://miniflux:secret@db/miniflux?sslmode=disable
       - RUN_MIGRATIONS=1
@@ -20,6 +21,7 @@ services:
       - POSTGRES_USER=miniflux
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=miniflux
+    restart: always
     volumes:
       - miniflux-db:/var/lib/postgresql/data
     healthcheck:

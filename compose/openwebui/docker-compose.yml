@@ -3,6 +3,7 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     volumes:
       - open-webui:/app/backend/data
+    restart: always
     networks:
       - default
       - proxy

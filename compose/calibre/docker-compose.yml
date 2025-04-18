@@ -10,7 +10,7 @@ services:
       - /Users/yash/docker/volumes/calibre/config:/config
       - ./ingest:/cwa-book-ingest
       - /Users/yash/docker/volumes/calibre/library:/calibre-library
-    restart: unless-stopped
+    restart: always
     networks:
       - proxy
 
@@ -22,7 +22,7 @@ services:
       CLOUDFLARE_PROXY_URL: http://cloudflarebypassforscraping:8000
       INGEST_DIR: /cwa-book-ingest
       BOOK_LANGUAGE: en
-    restart: unless-stopped
+    restart: always
     platform: linux/amd64
     volumes:
       # This is where the books will be downloaded to, usually it would be
@@ -33,7 +33,7 @@ services:
 
   cloudflarebypassforscraping:
     image: ghcr.io/sarperavci/cloudflarebypassforscraping:latest
-    restart: unless-stopped
+    restart: always
     platform: linux/amd64
 
 networks:

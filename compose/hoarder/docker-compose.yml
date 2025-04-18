@@ -1,7 +1,7 @@
 services:
   hoarder:
     image: ghcr.io/hoarder-app/hoarder:${HOARDER_VERSION:-release}
-    restart: unless-stopped
+    restart: always
     volumes:
       - /Users/yash/docker/volumes/hoarder/data:/data
     env_file:
@@ -21,7 +21,7 @@ services:
 
   chrome:
     image: gcr.io/zenika-hub/alpine-chrome:123
-    restart: unless-stopped
+    restart: always
     command:
       - --no-sandbox
       - --disable-gpu
@@ -34,7 +34,7 @@ services:
 
   meilisearch:
     image: getmeili/meilisearch:v1.11.1
-    restart: unless-stopped
+    restart: always
     env_file:
       - .env
     environment:
